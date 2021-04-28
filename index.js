@@ -27,23 +27,19 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
   // fetch existing users and send to client
   const users = [];
+
   // io.of('/').sockets is a Map of all currently connected Socket instances indexed by ID
   for(let [id, socket] of io.of('/').sockets) {
     users.push({userID: id, username: socket.username});
   }
-  console.log('Emitting users: ', users);
+
   // Send userlist upon a socket connection
   socket.emit("users", users);
-  // Send userlist to all clients on every connections?
-  // io.emit('users', users);
 
   // Notify existing users
   socket.broadcast.emit('user connected', {userID: socket.id, username: socket.username});
 
-  // Forward the msg to the right recipient
-  socket.on('private message', ({contet, to}) => {
-    socket.to(to).emit('private message', {content, from: socket.id});
-  });
+  /* Implement send message event here! */
 
   // Notify users on disconnection
   socket.on('disconnect', () => {
